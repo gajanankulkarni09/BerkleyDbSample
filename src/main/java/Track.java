@@ -51,8 +51,8 @@ public class Track {
                 .filter(train -> train.stopsAt(sourceStation))
                 .filter(train -> train.stopsAt(destinationStation))
                 .sorted((t1, t2) -> {
-                    LocalDateTime t1Time = t1.getStopArrivalDateTime(destinationStation, dateTime.toLocalDate());
-                    LocalDateTime t2Time = t2.getStopArrivalDateTime(destinationStation, dateTime.toLocalDate());
+                    LocalDateTime t1Time = t1.getStopArrivalDateTime(destinationStation, dateTime);
+                    LocalDateTime t2Time = t2.getStopArrivalDateTime(destinationStation, dateTime);
                     return t1Time.compareTo(t2Time);
                 }).toList();
     }

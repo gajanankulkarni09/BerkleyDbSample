@@ -26,12 +26,6 @@ public class Stop {
         return station.getStationName();
     }
 
-    public LocalDateTime getArrivalTime(LocalDate trainStartDate) {
-        LocalDate stopDate = trainStartDate.plusDays(dayNumber);
-        LocalDateTime localDateTime = LocalDateTime.of(stopDate, arrivalTime);
-        return localDateTime;
-    }
-
     public LocalTime getArrivalTime(){
         return this.arrivalTime;
     }

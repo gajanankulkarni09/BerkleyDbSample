@@ -13,6 +13,8 @@ public class Train {
     private List<Stop> stops;
     private Map<String, Stop> stopsMap;
     private boolean[] runningDays;
+    private Station sourceStation;
+    private Station destinationStation;
 
     public Train() {
     }
@@ -23,6 +25,8 @@ public class Train {
         this.stops = stops;
         this.stopsMap = stops.stream().collect(Collectors.toMap(Stop::getStopName, Function.identity()));
         this.runningDays = runningDays;
+        sourceStation = stops.get(0).getStation();
+        destinationStation = stops.get(stops.size() - 1).getStation();
     }
 
     public String getTrainId() {
@@ -33,22 +37,29 @@ public class Train {
         return trainName;
     }
 
+    public Station getSourceStation(){
+        return this.sourceStation;
+    }
+
+    public Station getDestinationStation(){
+        return this.destinationStation;
+    }
+
     public boolean stopsAt(Station station) {
         return stopsMap.containsKey(station.getStationName());
     }
 
-    public LocalDateTime getStopArrivalDateTime(Station station, LocalDate startDate) {
-        if (stopsMap.containsKey(station.getStationName())) {
-            return stopsMap.get(station.getStationName()).getArrivalTime(startDate);
-        }
-        return null;
+    public LocalDateTime getStopArrivalDateTime(Station station, LocalDateTime trainStartDateTime) {
+      
+        Stop stop = stopsMap.get(station.getStationName());
+        return LocalDateTime.of(trainStartDateTime.plusDays(stop.getDayNumber()).toLocalDate(), stop.getArrivalTime());
     }
 
-    public LocalTime getStopArrivalTime(Station station) {
-        if (stopsMap.containsKey(station.getStationName())) {
-            return stopsMap.get(station.getStationName()).getArrivalTime();
-        }
-        return null;
+    public LocalDateTime getTrainStartDateTime(Station station, LocalDateTime stationArrivalDateTime) {
+      
+        Stop stop = stopsMap.get(station.getStationName());
+        Stop firstStop = stops.get(0);
+        return LocalDateTime.of(stationArrivalDateTime.minusDays(stop.getDayNumber()).toLocalDate(), firstStop.getArrivalTime());
     }
 
     public boolean runsOnDay(DayOfWeek dayOfWeek, Station station) {

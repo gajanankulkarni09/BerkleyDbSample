@@ -1,4 +1,4 @@
-import com.connectingTrain.LatLong;
+import com.connectingTrain.GeoCoordinate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class Station {
     private String stationId;
     private String stationName;
-    private LatLong latLong;
+    private GeoCoordinate geoCoordinate;
 
     private Set<Track> tracks;
     private Map<Integer, Set<Train>> trains;
@@ -15,10 +15,10 @@ public class Station {
     public Station() {
     }
 
-    public Station(String stationId, String stationName, LatLong latLong, Set<Track> tracks) {
+    public Station(String stationId, String stationName, GeoCoordinate geoCoordinate, Set<Track> tracks) {
         this.stationId = stationId;
         this.stationName = stationName;
-        this.latLong = latLong;
+        this.geoCoordinate = geoCoordinate;
         this.tracks = tracks;
         populateTrains();
     }
@@ -43,8 +43,8 @@ public class Station {
         return stationName;
     }
 
-    public LatLong getLatLong() {
-        return latLong;
+    public GeoCoordinate getGeoCoordinate() {
+        return geoCoordinate;
     }
 
     public Set<Track> getTracks() {
@@ -52,7 +52,7 @@ public class Station {
     }
 
     public double getDistance(@NotNull Station station) {
-        return latLong.getDistance(station.getLatLong());
+        return geoCoordinate.getDistance(station.getGeoCoordinate());
     }
 
     public boolean hasRoute(Track route) {
