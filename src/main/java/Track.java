@@ -2,26 +2,29 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Track {
-    private int tracksId;
+    private String trackCode;
     private Station sourceStation;
     private Station destinationStation;
     private List<ConnectedTracks> connectedTracksList;
-    private Map<Integer, Station> tracksIntersectionMap;
+    private Map<String, Station> tracksIntersectionMap;
+    private Map<String, Integer> trackStationIndexes;
 
     private List<Train> trains;
 
     public Track() {
+
     }
 
-    Track(int trackId, Station sourceStation, Station destinationStation, List<ConnectedTracks> connectedTracksList, List<Train> trains) {
-        this.tracksId = trackId;
+    Track(String trackId, Station sourceStation, Station destinationStation, List<ConnectedTracks> connectedTracksList, List<Train> trains) {
+        this.trackCode = trackId;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
         this.connectedTracksList = connectedTracksList;
         this.trains = trains;
         tracksIntersectionMap = new HashMap<>();
         for (ConnectedTracks connectedTrack : connectedTracksList) {
-            tracksIntersectionMap.put(connectedTrack.destinationTrack.getTracksId(), connectedTrack.getIntersectingStation());
+            tracksIntersectionMap.put(connectedTrack.getDestinationTrack().getTrackCode(), connectedTrack.getIntersectingStation());
+            trackStationIndexes.put(connectedTrack.getIntersectingStation().getStationCode(), connectedTrack.getStationNumber());
         }
     }
 
@@ -29,8 +32,8 @@ public class Track {
         return trains;
     }
 
-    public int getTracksId() {
-        return tracksId;
+    public String getTrackCode() {
+        return trackCode;
     }
 
     public Station getSourceStation() {
@@ -58,7 +61,11 @@ public class Track {
     }
 
     public Station getIntesectingStation(Track nextTrack) {
-        return tracksIntersectionMap.getOrDefault(nextTrack.getTracksId(), null);
+        return tracksIntersectionMap.getOrDefault(nextTrack.getTrackCode(), null);
+    }
+
+    public int getStationNumberOnTrack(String stationCode) {
+        return trackStationIndexes.get(stationCode);
     }
 
     @Override
@@ -66,12 +73,22 @@ public class Track {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Track route = (Track) o;
-        return tracksId == route.tracksId;
+        return trackCode == route.trackCode;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tracksId);
+        return Objects.hash(trackCode);
+    }
+
+    public boolean isStation1BeforeStation2(Station station1, Station station2) {
+        int station1Number = trackStationIndexes.get(station1.getStationCode());
+        int station2Number = trackStationIndexes.get(station2.getStationCode());
+        return station1Number <= station2Number;
+    }
+
+    public boolean isOppositeTrack(Track destinationTrack) {
+
     }
 }
 

@@ -5,18 +5,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Station {
-    private String stationId;
+    private String stationCode;
     private String stationName;
     private GeoCoordinate geoCoordinate;
 
     private Set<Track> tracks;
-    private Map<Integer, Set<Train>> trains;
+    private Map<String, Set<Train>> trains;
 
     public Station() {
     }
 
     public Station(String stationId, String stationName, GeoCoordinate geoCoordinate, Set<Track> tracks) {
-        this.stationId = stationId;
+        this.stationCode = stationId;
         this.stationName = stationName;
         this.geoCoordinate = geoCoordinate;
         this.tracks = tracks;
@@ -31,12 +31,12 @@ public class Station {
                     .stream()
                     .filter(train -> train.stopsAt(this))
                     .collect(Collectors.toSet());
-            trains.put(track.getTracksId(), set);
+            trains.put(track.getTrackCode(), set);
         }
     }
 
-    public String getStationId() {
-        return stationId;
+    public String getStationCode() {
+        return stationCode;
     }
 
     public String getStationName() {
@@ -55,9 +55,8 @@ public class Station {
         return geoCoordinate.getDistance(station.getGeoCoordinate());
     }
 
-    public boolean hasRoute(Track route) {
+    public boolean hasTrack(Track route) {
         return tracks.contains(route);
     }
-
 
 }

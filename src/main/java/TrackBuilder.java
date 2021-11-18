@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackBuilder {
-    private int trackId;
+    private String trackId;
     private Station sourceStation;
     private Station destinationStation;
     private List<Train> trains;
@@ -13,7 +13,7 @@ public class TrackBuilder {
         connectedTracksList = new ArrayList<>();
     }
 
-    public void setTrackId(int trackId){
+    public void setTrackId(String trackId){
         this.trackId = trackId;
     }
 
