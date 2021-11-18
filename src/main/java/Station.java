@@ -59,4 +59,16 @@ public class Station {
         return tracks.contains(route);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Station station = (Station) o;
+        return stationCode.equals(station.stationCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stationCode);
+    }
 }

@@ -10,6 +10,7 @@ public class RouteExploreCommand {
     private List<Track[]> selectedRoutesList = new ArrayList<>();
     private Map<String, Integer[]> stationResultMap = new HashMap<>();
     private Map<String, Boolean> stationsExistInPath = new HashMap<>();
+    private Set<String> trackCodesInResult = new HashSet<>();
 
     public RouteExploreCommand(Station sourceStation, Station destinationStation) {
         this.sourceStation = sourceStation;
@@ -42,6 +43,9 @@ public class RouteExploreCommand {
     private boolean exploreRoutes(@NotNull Track sourceTrack, @NotNull Station sourceStation, @NotNull Track[] currentTracks, int index) {
         if (index > max) return false;
 
+        String oppositeTrackCode = sourceTrack.getOppositeTrackCode();
+        if (trackCodesInResult.contains(oppositeTrackCode)) return false;
+
         String stationCode = sourceStation.getStationCode();
         String trackCode = sourceTrack.getTrackCode();
         String stationCodeTrackIdKey = stationCode + "#" + trackCode;
@@ -51,6 +55,9 @@ public class RouteExploreCommand {
         //this will save lot of computations , because there are lots of tracks with common stations.
         if (stationsExistInPath.containsKey(stationCodeTrackIdKey)) {
             if (!stationsExistInPath.get(stationCodeTrackIdKey)) return false;
+            for (Track t : currentTracks) {
+                trackCodesInResult.add(t.getTrackCode());
+            }
             copyResultFromStationMap(sourceTrack, currentTracks, index, stationCodeTrackIdKey);
             return true;
         }
@@ -64,6 +71,9 @@ public class RouteExploreCommand {
         //if destinationStation is on sourceTrack, we found result
         if (destinationStation.hasTrack(sourceTrack)) {
             selectedRoutesList.add(Arrays.copyOf(currentTracks, index));
+            for (Track t : currentTracks) {
+                trackCodesInResult.add(t.getTrackCode());
+            }
             max = Math.min(max, index);
             return true;
         }
@@ -73,11 +83,12 @@ public class RouteExploreCommand {
         Iterator<ConnectedTracks> trackIterator = sourceTrack.getConnectedTracksList();
         while (trackIterator.hasNext()) {
             ConnectedTracks connectedTrack = trackIterator.next();
+            //below line of code prevent loops
             if (sourceTrack.isStation1BeforeStation2(connectedTrack.getIntersectingStation(), sourceStation))
                 continue;
             Track destinationTrack = connectedTrack.getDestinationTrack();
             if (sourceTrack.isOppositeTrack(destinationTrack)) continue;
-            exploreRoutes(destinationTrack, connectedTrack.getIntersectingStation(), currentTracks, index + 1);
+            exploreRoutes(destinationTrack, connectedTrack.getIntersectingStation(),currentTracks, index + 1);
         }
 
         if (beforeSelectedRoutesListSize < selectedRoutesList.size()) {

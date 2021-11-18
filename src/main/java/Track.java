@@ -15,8 +15,8 @@ public class Track {
 
     }
 
-    Track(String trackId, Station sourceStation, Station destinationStation, List<ConnectedTracks> connectedTracksList, List<Train> trains) {
-        this.trackCode = trackId;
+    Track(String trackCode, Station sourceStation, Station destinationStation, List<ConnectedTracks> connectedTracksList, List<Train> trains) {
+        this.trackCode = trackCode;
         this.sourceStation = sourceStation;
         this.destinationStation = destinationStation;
         this.connectedTracksList = connectedTracksList;
@@ -89,6 +89,11 @@ public class Track {
 
     public boolean isOppositeTrack(Track destinationTrack) {
 
+    }
+
+    public String getOppositeTrackCode(){
+        String[] segments = trackCode.split("#");
+        return segments[1] + "#" + segments[0] + "#" + segments[2];
     }
 }
 
